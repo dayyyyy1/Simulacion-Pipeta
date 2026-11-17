@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Brazo para pipeta</title>
+
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Diseño (colores, tamaños, acomodo) -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============ 1. ENCABEZADO ============ -->
+  <header class="encabezado">
+    <div class="contenedor">
+      <p class="materia">Sistemas electromecánicos · proyecto</p>
+      <h1>Brazo de dos motores para mover una pipeta</h1>
+      <p class="alumna">ESPINOZA LOPEZ AVRIL DAYANNE · Grupo 5CM2</p>
+      <p class="descripcion">El motor 1 gira la base y lleva la pipeta de A a B. El motor 2 sube y baja el brazo. Mueve los controles y la página recalcula el par y la fuerza de cada motor.</p>
+    </div>
+  </header>
+
+  <main class="contenedor">
+
+    <!-- ============ 2. SIMULACIÓN ============ -->
+    <section class="seccion" id="simulacion">
+      <h2><span class="numero">1</span> Simulación</h2>
+
+      <figure class="tarjeta">
+        <figcaption>Brazo en 3D <span>M1 gira la base · M2 sube y baja el brazo</span></figcaption>
+        <canvas id="arm" height="440"></canvas>
+      </figure>
+
+      <ol class="pasos">
+        <li id="ph1"><b>1. Sube</b> El motor 2 levanta la pipeta en A</li>
+        <li id="ph2"><b>2. Gira</b> El motor 1 la lleva de A a B</li>
+        <li id="ph3"><b>3. Baja</b> El motor 2 la deja en B</li>
+      </ol>
+
+      <div class="reproductor">
+        <button id="play" type="button">▶ Simular</button>
+        <input type="range" id="scrub" min="0" max="1000" step="1" value="0" aria-label="Tiempo de la simulación">
+        <output id="clock">t = 0.0 s</output>
+        <p id="phase" class="fase">En reposo sobre A</p>
+      </div>
+    </section>
+
+    <!-- ============ 3. DATOS DEL BRAZO ============ -->
+    <section class="seccion" id="datos">
+      <h2><span class="numero">2</span> Datos del brazo</h2>
+      <p class="nota">La pipeta pesa 12 g. Lo demás son valores propuestos: cámbialos por los de tus piezas.</p>
+
+      <div class="tarjeta controles">
+        <div class="control">
+          <label for="mp">Pipeta <output id="mp_o"></output></label>
+          <input type="range" id="mp" min="5" max="50" step="1" value="12">
+        </div>
+        <div class="control">
+          <label for="mg">Pinza que la sujeta <output id="mg_o"></output></label>
+          <input type="range" id="mg" min="5" max="100" step="1" value="30">
+        </div>
+        <div class="control">
+          <label for="mb">Masa del brazo <output id="mb_o"></output></label>
+          <input type="range" id="mb" min="10" max="200" step="5" value="50">
+        </div>
+        <div class="control">
+          <label for="L">Largo del brazo <output id="L_o"></output></label>
+          <input type="range" id="L" min="16" max="30" step="1" value="20">
+        </div>
+        <div class="control">
+          <label for="d">Distancia de A a B <output id="d_o"></output></label>
+          <input type="range" id="d" min="10" max="30" step="1" value="30">
+        </div>
+        <div class="control">
+          <label for="up">Ángulo que sube <output id="up_o"></output></label>
+          <input type="range" id="up" min="10" max="60" step="1" value="30">
+        </div>
+        <div class="control">
+          <label for="T">Tiempo total <output id="T_o"></output></label>
+          <input type="range" id="T" min="4" max="20" step="1" value="10">
+        </div>
+        <div class="control">
+          <label for="B">Fricción B <output id="B_o"></output></label>
+          <input type="range" id="B" min="0" max="10" step="0.5" value="2">
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4. RESULTADOS ============ -->
+    <section class="seccion" id="resultados">
+      <h2><span class="numero">3</span> Resultados</h2>
+
+      <div class="dos-columnas">
+        <div class="tarjeta tabla-scroll">
+          <table>
+            <thead>
+              <tr><th></th><th><i class="punto m1"></i>Motor 1 <small>base</small></th><th><i class="punto m2"></i>Motor 2 <small>hombro</small></th></tr>
+            </thead>
+            <tbody>
+              <tr><th>Par máximo</th><td id="r_T1"></td><td id="r_T2"></td></tr>
+              <tr><th>Fuerza en la punta</th><td id="r_F1"></td><td id="r_F2"></td></tr>
+              <tr><th>Velocidad</th><td id="r_w1"></td><td id="r_w2"></td></tr>
+              <tr><th>Potencia</th><td id="r_P1"></td><td id="r_P2"></td></tr>
+              <tr><th>Par con factor ×2</th><td id="r_S1"></td><td id="r_S2"></td></tr>
+              <tr><th>Giro</th><td id="r_a1"></td><td id="r_a2"></td></tr>
+              <tr><th>Pasos (1.8° por paso)</th><td id="r_p1"></td><td id="r_p2"></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tarjeta">
+          <h3>¿Qué motor alcanza?</h3>
+          <div class="motores">
+            <div class="motor"><span>NEMA 17 17HS4023 <small>1.4 kg·cm</small></span><b id="v_a1"></b><b id="v_a2"></b></div>
+            <div class="motor"><span>NEMA 17 17HS4401 <small>4 kg·cm</small></span><b id="v_b1"></b><b id="v_b2"></b></div>
+          </div>
+          <p class="aviso" id="verdictNote"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5. GRÁFICAS ============ -->
+    <section class="seccion" id="graficas">
+      <h2><span class="numero">4</span> Par de cada motor durante el recorrido</h2>
+      <div class="vistas">
+        <figure class="tarjeta">
+          <figcaption>Motor 1 <span>T₁ = J·cos²θ·α₁ + B·ω₁</span></figcaption>
+          <canvas id="c1" height="170"></canvas>
+        </figure>
+        <figure class="tarjeta">
+          <figcaption>Motor 2 <span>T₂ = J·α₂ + B·ω₂ + (m + m_b/2)·g·L·cos θ</span></figcaption>
+          <canvas id="c2" height="170"></canvas>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ 6. CIRCUITO ============ -->
+    <section class="seccion" id="circuito">
+      <h2><span class="numero">5</span> Circuito</h2>
+      <p class="nota">Esquemático del control. Al simular, se marcan en morado las líneas que llevan señal, el rotor de cada motor avanza paso por paso y abajo se ven los pulsos que manda el Arduino.</p>
+
+      <figure class="tarjeta">
+        <figcaption>Esquemático <span>Arduino UNO · 2 drivers A4988 · 2 motores NEMA 17</span></figcaption>
+        <div class="lienzo-ancho"><canvas id="circ" height="430"></canvas></div>
+        <div class="lecturas">
+          <output id="sig1"></output>
+          <output id="sig2"></output>
+        </div>
+      </figure>
+
+      <figure class="tarjeta">
+        <figcaption>Señales digitales <span>un pulso en STEP = un paso de 1.8°</span></figcaption>
+        <canvas id="logic" height="190"></canvas>
+      </figure>
+
+      <div class="tarjeta tabla-scroll">
+        <h3>Conexiones</h3>
+        <table class="conexiones">
+          <thead><tr><th>De</th><th>A</th><th>Para qué</th></tr></thead>
+          <tbody>
+            <tr><td>Arduino D2</td><td>U1 STEP</td><td>Pulsos del motor 1 (base)</td></tr>
+            <tr><td>Arduino D3</td><td>U1 DIR</td><td>Sentido de giro del motor 1</td></tr>
+            <tr><td>Arduino D4</td><td>U2 STEP</td><td>Pulsos del motor 2 (hombro)</td></tr>
+            <tr><td>Arduino D5</td><td>U2 DIR</td><td>Subir (HIGH) o bajar (LOW)</td></tr>
+            <tr><td>Arduino 5V y GND</td><td>VDD y GND de U1 y U2</td><td>Alimentación de la lógica</td></tr>
+            <tr><td>Fuente 12 V</td><td>VMOT y GND de U1 y U2</td><td>Alimentación de los motores</td></tr>
+            <tr><td>C1 y C2, 100 µF</td><td>Entre VMOT y GND de cada driver</td><td>Proteger el A4988 de picos</td></tr>
+            <tr><td>RST con SLP</td><td>Unidos en cada driver</td><td>Mantener el driver activo</td></tr>
+            <tr><td>1A, 1B, 2A, 2B</td><td>Las dos bobinas de cada motor</td><td>Corriente a las bobinas</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ 7. CÓMO SE CALCULA ============ -->
+    <section class="seccion" id="calculo">
+      <h2><span class="numero">6</span> Cómo se calcula</h2>
+      <div class="tarjeta">
+        <ol class="ecuaciones">
+          <li><b>Inercia del brazo con la pipeta.</b> J = m·L² + ⅓·m<sub>b</sub>·L² <output id="e_J"></output></li>
+          <li><b>Ángulo que gira la base</b> para recorrer la distancia d en línea recta. φ = 2·sen⁻¹(d / 2L) <output id="e_phi"></output></li>
+          <li><b>Motor 1.</b> Solo vence la inercia y la fricción, porque gira en horizontal. T₁ = J·cos²θ·α₁ + B·ω₁ <output id="e_T1"></output></li>
+          <li><b>Motor 2.</b> Además carga el peso del brazo y la pipeta. T₂ = J·α₂ + B·ω₂ + (m + m<sub>b</sub>/2)·g·L·cos θ <output id="e_T2"></output></li>
+          <li><b>Fuerza en la punta, velocidad y potencia.</b> F = T / L, ω = Δθ / (t − t<sub>a</sub>), P = T·ω</li>
+        </ol>
+        <p class="nota">m es la masa de la pipeta más la pinza. Cada movimiento acelera 0.5 s, avanza a velocidad constante y frena 0.5 s. El tiempo se reparte en 20 % subir, 60 % girar y 20 % bajar.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Cálculos, dibujos y animación -->
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+/* =====================================================
+   1. PALETA DE COLORES
+   Todos los colores de la página salen de aquí.
+   ===================================================== */
+:root {
+  /* Los cinco colores de la paleta */
+  --morado: #7d6aa8;
+  --lila:   #c8b4ca;
+  --rosa:   #e8dcdc;
+  --crema:  #f4e2b0;
+  --cafe:   #c5a893;
+
+  /* Colores de apoyo */
+  --blanco:      #ffffff;
+  --texto:       #3a2f52;   /* morado muy oscuro, para leer bien */
+  --texto-suave: #6f6485;
+  --no-alcanza:  #a8424f;
+
+  /* A quién le toca cada color */
+  --fondo:   var(--rosa);
+  --tarjeta: var(--blanco);
+  --borde:   var(--lila);
+  --motor1:  var(--morado);
+  --motor2:  var(--cafe);
+
+  /* Tipografías */
+  --titulos: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --cuerpo:  "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --numeros: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  color-scheme: light;
+}
+
+/* =====================================================
+   2. BASE
+   ===================================================== */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--cuerpo);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.contenedor {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+main.contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  padding-top: 30px;
+  padding-bottom: 56px;
+}
+
+output {
+  font-family: var(--numeros);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+/* =====================================================
+   3. ENCABEZADO
+   ===================================================== */
+.encabezado {
+  background: var(--morado);
+  color: var(--blanco);
+  padding: 30px 0 32px;
+  border-bottom: 6px solid var(--crema);
+}
+
+.materia {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--crema);
+}
+
+h1 {
+  font-family: var(--titulos);
+  font-weight: 700;
+  font-size: clamp(26px, 4.4vw, 38px);
+  line-height: 1.1;
+  margin: 6px 0 10px;
+  text-wrap: balance;
+}
+
+.alumna {
+  margin: 0 0 10px;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+
+.descripcion {
+  margin: 0;
+  max-width: 65ch;
+}
+
+/* =====================================================
+   4. SECCIONES Y TARJETAS (se repiten en toda la página)
+   ===================================================== */
+.seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+h2 {
+  font-family: var(--titulos);
+  font-weight: 500;
+  font-size: 21px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.numero {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--crema);
+  font-size: 15px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+
+.tarjeta {
+  margin: 0;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.nota {
+  margin: 0;
+  font-size: 13px;
+  color: var(--texto-suave);
+  max-width: 70ch;
+}
+
+.vistas,
+.dos-columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+/* =====================================================
+   5. SIMULACIÓN
+   ===================================================== */
+figcaption {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+}
+
+figcaption span {
+  font-weight: 400;
+  font-family: var(--numeros);
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+}
+
+.pasos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.pasos li {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.pasos li b { display: block; color: var(--texto); }
+
+/* El paso que se está haciendo en este momento */
+.pasos li.activo {
+  background: var(--crema);
+  border-color: var(--morado);
+  color: var(--texto);
+}
+
+.reproductor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.reproductor input { flex: 1 1 200px; }
+
+.fase {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+button {
+  font: 600 14px var(--cuerpo);
+  color: var(--blanco);
+  background: var(--morado);
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 20px;
+  cursor: pointer;
+}
+
+button:hover { filter: brightness(1.08); }
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   6. DATOS DEL BRAZO (controles)
+   ===================================================== */
+.controles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px 28px;
+}
+
+.control label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.control output {
+  background: var(--crema);
+  border-radius: 6px;
+  padding: 1px 8px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--morado);
+}
+
+/* =====================================================
+   7. RESULTADOS
+   ===================================================== */
+.tabla-scroll { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  padding: 7px 6px;
+  border-bottom: 1px solid var(--rosa);
+  text-align: right;
+}
+
+thead th { font-weight: 600; }
+thead small { display: block; font-weight: 400; color: var(--texto-suave); }
+tbody th { text-align: left; font-weight: 400; color: var(--texto-suave); }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+
+td {
+  font-family: var(--numeros);
+  font-variant-numeric: tabular-nums;
+}
+
+.punto {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.punto.m1 { background: var(--motor1); }
+.punto.m2 { background: var(--motor2); }
+
+.motores {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.motor {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.motor small { color: var(--texto-suave); font-family: var(--numeros); }
+
+.motor b {
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+.motor b.ok  { background: var(--morado); color: var(--blanco); }
+.motor b.bad { background: var(--blanco); color: var(--no-alcanza); border: 1px solid var(--no-alcanza); }
+
+.aviso {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  background: var(--crema);
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+/* =====================================================
+   8. CIRCUITO
+   ===================================================== */
+.lienzo-ancho { overflow-x: auto; }
+.lienzo-ancho canvas { min-width: 680px; }
+
+.lecturas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+
+.lecturas output {
+  background: var(--crema);
+  border-radius: 6px;
+  padding: 3px 10px;
+}
+
+.conexiones th, .conexiones td { text-align: left; }
+.conexiones td { font-family: var(--cuerpo); }
+.conexiones td:first-child, .conexiones td:nth-child(2) { font-family: var(--numeros); }
+
+/* =====================================================
+   9. CÓMO SE CALCULA
+   ===================================================== */
+.ecuaciones {
+  margin: 0 0 12px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.ecuaciones output {
+  display: block;
+  margin-top: 2px;
+  color: var(--morado);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
