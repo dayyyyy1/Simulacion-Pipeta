@@ -390,3 +390,43 @@ td {
   font-weight: 500;
   overflow-wrap: anywhere;
 }
+
+/* =====================================================
+   10. CELULAR Y PANTALLAS CHICAS (media queries)
+   ===================================================== */
+@media (max-width: 700px) {
+  body { font-size: 14px; }
+
+  .encabezado { padding: 22px 0 24px; }
+  h1 { font-size: 25px; }
+  h2 { font-size: 18px; }
+  .alumna { font-size: 13px; }
+
+  main.contenedor { gap: 26px; padding-top: 22px; }
+
+  .tarjeta { padding: 12px; }
+  figcaption span { display: block; width: 100%; }
+
+  .pasos { grid-template-columns: 1fr; }
+
+  .reproductor input { flex: 1 1 100%; order: 3; }
+
+  .controles { grid-template-columns: 1fr; }
+
+  .vistas, .dos-columnas { grid-template-columns: 1fr; }
+
+  table { font-size: 12px; }
+  th, td { padding: 6px 4px; }
+
+  .motor { grid-template-columns: 1fr 1fr; }
+  .motor span { grid-column: 1 / -1; }
+  .motor b { text-align: center; }
+
+  .ecuaciones { padding-left: 18px; font-size: 13px; }
+}
+
+@media (max-width: 400px) {
+  .contenedor { padding: 0 12px; }
+  h1 { font-size: 22px; }
+  button { padding: 9px 16px; }
+}

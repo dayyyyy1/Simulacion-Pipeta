@@ -124,8 +124,11 @@ function update() {
    ===================================================== */
 function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 function ctxOf(id) {
-  const c = $(id), dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = +c.getAttribute('height');
-  if (c.width !== Math.round(w * dpr)) { c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); c.style.height = h + 'px'; }
+  const c = $(id), dpr = window.devicePixelRatio || 1, w = c.clientWidth;
+  /* La altura en CSS se guarda una sola vez: en celular, c.height cambia el atributo y se estiraba el dibujo */
+  if (!c.dataset.h) c.dataset.h = c.getAttribute('height');
+  const h = +c.dataset.h;
+  if (c.width !== Math.round(w * dpr) || c.height !== Math.round(h * dpr)) { c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); c.style.height = h + 'px'; }
   const x = c.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h);
   x.font = '12px "IBM Plex Sans", sans-serif'; x.lineCap = 'round';
   return [x, w, h];
@@ -133,6 +136,7 @@ function ctxOf(id) {
 
 /* --- Brazo en 3D: proyecta (X, Y, Z) en metros a la pantalla --- */
 function drawArm(p, s, C) {
+  $('arm').dataset.h = $('arm').clientWidth < 600 ? 340 : 440;   // más bajito en celular
   const [x, w, h] = ctxOf('arm');
   const sc = Math.min(780, (w - 30) / 0.74), cx = w / 2 - 0.11 * sc, cy = h - 150, K = 0.5;
   const Z0 = 0.12, HANG = 0.09;                       // altura del hombro y largo de la pipeta
@@ -220,7 +224,7 @@ function signals(tt, p) {
 function drawCircuit(p, C) {
   const cv = $('circ'), W = 900, H = 430;
   const hh = Math.round(H * cv.clientWidth / W);
-  if (+cv.getAttribute('height') !== hh) { cv.setAttribute('height', hh); cv.width = 0; }
+  if (+cv.dataset.h !== hh) { cv.dataset.h = hh; cv.width = 0; }
   const [x, w] = ctxOf('circ'), g = signals(t, p);
   x.scale(w / W, w / W);
   x.font = '11px "IBM Plex Mono", monospace';
